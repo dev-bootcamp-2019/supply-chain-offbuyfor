@@ -84,6 +84,8 @@ mapping (uint => Item) public items;
   constructor() public {
     /* Here, set the owner as the person who instantiated the contract
        and set your skuCount to 0. */
+       skuCount =0;
+       owner = msg.sender;
   }
 
   function addItem(string _name, uint _price) public returns(bool){
@@ -99,9 +101,15 @@ mapping (uint => Item) public items;
     if the buyer paid enough, and check the value after the function is called to make sure the buyer is
     refunded any excess ether sent. Remember to call the event associated with this function!*/
 
-  function buyItem(uint sku)
-    public
-  {}
+  function buyItem(uint sku) public payable forSale(sku) paidEnough(items[sku].price) checkValue(sku)
+  {
+   
+   items[sku].buyer = msg.sender;
+   items[sku].state = State.Sold;
+   items[sku].seller.transfer(items[sku].price);
+   emit Sold(sku);
+  
+  }
 
   /* Add 2 modifiers to check if the item is sold already, and that the person calling this function
   is the seller. Change the state of the item to shipped. Remember to call the event associated with this function!*/
