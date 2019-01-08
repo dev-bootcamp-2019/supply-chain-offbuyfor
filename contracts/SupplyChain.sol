@@ -35,8 +35,8 @@ mapping (uint => Item) public items;
         uint sku;
         uint price;
         State state;
-        address buyer;
-        address seller;
+        address payable buyer;
+        address payable seller;
     }
   /* Create 4 events with the same name as each possible State (see above)
     Each event should accept one argument, the sku*/
@@ -62,7 +62,7 @@ mapping (uint => Item) public items;
    to give them functionality. For example, the forSale modifier should require
    that the item with the given sku has the state ForSale. */
   modifier forSale(uint _sku){
-  require(items[_sku].state= State.ForSale);
+    require(items[_sku].state ==State.ForSale);
     _;
     }
   
@@ -87,10 +87,12 @@ mapping (uint => Item) public items;
        skuCount =0;
        owner = msg.sender;
   }
-
-  function addItem(string _name, uint _price) public returns(bool){
+  
+  
+    function addItem(string memory _name, uint _price) public returns(bool)
+   {
     emit ForSale(skuCount);
-    items[skuCount] = Item({name: _name, sku: skuCount, price: _price, state: State.ForSale, seller: msg.sender, buyer: address(0)});
+    items[skuCount] = Item({name: _name, sku: skuCount, price: _price, state: State.ForSale, buyer: address(0) , seller: msg.sender});
     skuCount = skuCount + 1;
     return true;
   }
@@ -128,7 +130,7 @@ mapping (uint => Item) public items;
     }
 
   /* We have these functions completed so we can run tests, just ignore it :) */
-  function fetchItem(uint _sku) public view returns (string name, uint sku, uint price, uint state, address seller, address buyer) {
+  function fetchItem(uint _sku) public view returns (string memory name, uint sku, uint price, uint state, address seller, address buyer) {
     name = items[_sku].name;
     sku = items[_sku].sku;
     price = items[_sku].price;
